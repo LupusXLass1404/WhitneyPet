@@ -32,6 +32,7 @@
         // schoolbully
 
         let Main = '';
+        let Diff = {};
         let mainId = document.getElementById('main');
         let diffId = document.getElementById('diff');
         let textId = document.getElementById('text');
@@ -60,32 +61,32 @@
             //         'whitneySchoolBully2',
             //     ]
             // },
-            {
-                h2: '節日',
-                h3: '萬聖節',
-                link: [
-                    '惠特尼的萬聖節',
-                    '凱拉爾的萬聖節'
-                ],
-                id: [
-                    'Kla',
-                    'Klaa',
-                ]
-            },
-            {
-                h2: '放逐',
-                h3: '',
-                link: [
-                    '暈倒',
-                    '詢問發生了什麼事',
-                    '尋人啟事'
-                ],
-                id: [
-                    'whitney1',
-                    'whitney3',
-                    'whitney2',
-                ]
-            },
+            // {
+            //     h2: '節日',
+            //     h3: '萬聖節',
+            //     link: [
+            //         '惠特尼的萬聖節',
+            //         '凱拉爾的萬聖節'
+            //     ],
+            //     id: [
+            //         'Kla',
+            //         'Klaa',
+            //     ]
+            // },
+            // {
+            //     h2: '放逐',
+            //     h3: '',
+            //     link: [
+            //         '暈倒',
+            //         '詢問發生了什麼事',
+            //         '尋人啟事'
+            //     ],
+            //     id: [
+            //         'whitney1',
+            //         'whitney3',
+            //         'whitney2',
+            //     ]
+            // },
             {
                 h2: '告白',
                 h3: '',
@@ -101,50 +102,164 @@
                 ]
             }
         ]
+
+        let commonText = {
+            red: '<span class="red">壓力</span>',
+        }
+
+        let diffText = {
+
+        }
+
+        let diffOut1 = '';
+        let diffOut2 = '';
+        let diffOut3 = '';
+
+        let diff = {
+            // whitneyConfessCourtyard: {
+            //     link: [
+            //         [
+            //             '跑步',
+            //             '打籃球'
+            //         ], [
+            //             '喜歡',
+            //             '不喜歡'
+            //         ], [
+            //             '溫順',
+            //             '中立',
+            //             '抗拒'
+            //         ], [
+            //             '男LI',
+            //             '女LI'
+            //         ]
+            //     ],
+            //     text: [
+            //         [
+            //             '跑100米',
+            //             '丟籃板球'
+            //         ], [
+            //             '喜歡很久',
+            //             '討厭'
+            //         ], [
+            //             '溫柔',
+            //             '急切',
+            //             '自信'
+            //         ], [
+            //             '男',
+            //             '女'
+            //         ]
+            //     ]
+            // },
+
+            whitneyConfessCourtyard: [
+                [
+                    ['跑步', '跑100米'],
+                    ['打籃球', '丟籃板球'],
+                    ['溫順', '溫柔']
+                ], [
+                    ['喜歡', '喜歡很久', `<span class="gold">你交到${diffOut1}朋友了</span>`],
+                    ['不喜歡', '討厭', ``]
+                ], [
+                    ['中立', '急切'],
+                    ['抗拒', '自信']
+                ], [
+                    ['男LI', '男'],
+                    ['女LI', '女']
+                ]
+            ],
+            whitneyConfessStreet: ['',],
+            whitneyConfessPark: ['',],
+        }
+        console.log
+
+
+        // <p>你在［跑步、打籃球］，</p><p>你［不喜歡／喜歡］的人跟你告白，</p><p>你［溫順／普通／抗拒］的回復。</p>［<span class="gold">你交到［男／女］朋友了</span>］
+        // 不喜歡就不會出現最後一行，喜歡就會出現最後一行
+        // 
+        // `<p>你在${linkId[0][1]}，</p><p>你${好感}的人跟你告白，</p><p>你${態度}的回復。</p>${好感${性別}}
+
         let text = {
             whitneyConfessCourtyard:
-                '<p>你在操場</p><p>你喜歡的人跟你告白</p><p><span class="gold">你交到男朋友了！</span></p>',
+                `<p>你在操場</p><p>你喜歡的人跟你告白</p><p><span class="gold">你交到男朋友了！</span></p>`,
             whitneyConfessStreet:
-                '<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>',
+                `<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>`,
             whitneyConfessPark:
-                '<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>',
+                `<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>`,
         }
+
 
         // console.log(mainLink[0].link); //測試json用
 
         // 首頁
         function main() {
             for (i = 0; i < mainLink.length; i++) {
-                // 插入標題
+                // 插入首頁標題
                 Main += `<h2>${mainLink[i].h2}</h2>`;
                 Main += `<h3>${mainLink[i].h3}</h3>`;
-                // 插入連結
+                // 插入首頁連結
                 for (n = 0; n < mainLink[i].link.length; n++) {
-                    Main += `<span id="${mainLink[i].id[n]}" class="link">${mainLink[i].link[n]}</span>`;
+                    let linkId = mainLink[i].id[n];
+                    Main += `<span id="${linkId}" class="link">${mainLink[i].link[n]}</span>`;
 
-                    // 插入分隔號，但最後一個不要插入
+                    // 首頁連結插入分隔號，但最後一個不要插入
                     if (n !== (mainLink[i].link.length - 1)) {
                         Main += `｜`;
                     }
-                    // 更新文字
+                    // 更新首頁文字
                     mainId.innerHTML = Main;
+
+                    // 建構差分選項
+                    let diffStr = '';
+                    for (d = 0; d < diff[`${linkId}`].length; d++) {
+                        // console.log(diff[`${linkId}`][d]);
+                        for (a = 0; a < diff[`${linkId}`][d].length; a++) {
+                            // console.log(diff[`${linkId}`][d][a][0]);
+                            diffStr += `<span id='${linkId}${d}_${a}' class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
+                        }
+                    }
+                    Diff[`${linkId}`] = diffStr;
                 }
             }
-            mainChange()
-            diffHide()
-            textHide()
+            mainChange();
+            // diffHide();
+            textHide();
+            console.log(Diff);
         }
 
-        // 初始化
-        main()
+        // 差分建構
+        for (let key in Diff) {
+            if (Diff.hasOwnProperty(key)) {
+                console.log(`${key}: ${Diff[key]}`);
+            }
+        }
 
-        // 點擊事件
+
+
+
+        // 初始化
+        main();
+
+        // 首頁點擊事件
         for (i = 0; i < mainLink.length; i++) {
             for (n = 0; n < mainLink[i].link.length; n++) {
                 let linkId = mainLink[i].id[n];
                 document.getElementById(linkId).onclick = function () { mainHide(); textChange(linkId); };
+
+                // 差分點擊事件
+                for (d = 0; d < diff[`${linkId}`].length; d++) {
+                    // console.log(diff[`${linkId}`][d]);
+
+                    // for (a = 0; a < diff[`${linkId}`][d].length; a++) {
+                    //     console.log(linkId+d+'_'+a);
+                    //     document.getElementById(`${linkId}${d}_${a}`).onclick = function () { mainHide(); textChange(linkId); };
+                    // }
+                }
+
             }
         }
+        // 差分點擊事件
+
+
 
         // 顯示首頁
         function mainShow() {
@@ -178,14 +293,17 @@
         // 改變文本
         function textChange(item) {
             mainHide();
+            diffShow();
             textShow();
             console.log(item);
+            diffId.innerHTML = Diff[item];
             textId.innerHTML = text[item];
         }
 
-        // 顯示、隱藏首頁，點擊事件設定
+        // 返回主頁的按鈕
         document.getElementById('show').onclick = function () {
             mainShow();
+            // diffHide();
             textHide();
         };
 
