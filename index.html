@@ -19,6 +19,10 @@
         .gold {
             color: #ffd700;
         }
+
+        .light {
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
+        }
     </style>
 
 </head>
@@ -159,12 +163,12 @@
             whitneyConfessCourtyard: [
                 [
                     ['跑步', '跑100米'],
-                    ['打籃球', '丟籃板球'],
-                    ['溫順', '溫柔']
+                    ['打籃球', '丟籃板球']
                 ], [
-                    ['喜歡', '喜歡很久', `<span class="gold">你交到${diffOut1}朋友了</span>`],
-                    ['不喜歡', '討厭', ``]
+                    ['喜歡', '喜歡很久', `你交到${diffOut1}朋友了`],
+                    ['不喜歡', '討厭', `你沒交到朋友`]
                 ], [
+                    ['溫順', '溫柔'],
                     ['中立', '急切'],
                     ['抗拒', '自信']
                 ], [
@@ -220,7 +224,11 @@
                         // console.log(diff[`${linkId}`][d]);
                         for (a = 0; a < diff[`${linkId}`][d].length; a++) {
                             // console.log(diff[`${linkId}`][d][a][0]);
-                            diffStr += `<span id='${linkId}Diff_${d}_${a}' class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
+                            diffStr += `<span id="${linkId}Diff_${d}_${a}" class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
+                            for (l = 1; l < diff[`${linkId}`][d][a].length; l++) {
+                                console.log(diff[`${linkId}`][d][a][l]);
+                                diff[`${linkId}`][d][a][l] = `<span class="${linkId}Text_${d}_${a}">${diff[`${linkId}`][d][a][l]}</span>`
+                            }
                         }
                     }
                     Diff[`${linkId}`] = `${diffStr}`;
@@ -304,13 +312,14 @@
         }
         // 改變文本
         function textChange(item, itemId) {
-            console.log(item, itemId);
+            // console.log(item, itemId);
             let DI = diff[`${item}`];
-            let par = DI.length;
-
-
             let type = 0;
-            // const  = 3;
+            let T = {};
+
+            for (let i = 0; i < DI.length; i++) {
+                T[`${i}`] = 0;
+            }
 
             // 使用正則表達式匹配並提取數字
             if (itemId !== undefined) {
@@ -318,25 +327,45 @@
                 if (num) {
                     // num[1] 匹配第一個數字，num[2] 匹配第二個數字
                     type = parseInt(num[1], 10);
-                    DT[type] = parseInt(num[2], 10);
+                    T[`${type}`] = parseInt(num[2], 10);
+                    // console.log(type);
+                    // console.log(T);
                 }
             }
-            // console.log(type + '+' + DT);
 
             let text = {
                 whitneyConfessCourtyard:
-                    `<p>你在${DI[0][0][1]}</p><p>你${DI[1][0][1]}的人跟你告白</p><p><span class="gold">你交到男朋友了！</span></p>`,
+                    `<p>你在${DI[0][T[0]][1]}，</p><p>你${DI[1][T[1]][1]}的人跟你告白，</p><p>你${DI[2][T[2]][1]}的回復。</p>${DI[1][T[1]][2]}`,
                 whitneyConfessStreet:
                     `<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>`,
                 whitneyConfessPark:
                     `<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>`,
             }
+
             mainHide();
             diffShow();
             textShow();
             diffId.innerHTML = Diff[item];
             textId.innerHTML = text[item];
             diffClick(item)
+
+            if (itemId !== undefined) {
+                const num = itemId.match(/_(\d+)_(\d+)/);
+                if (num) {
+                    // 讓變更的文字發光``
+                    // console.log(`${item}Text_${num[1]}_${num[2]}`);
+                    let lightText = document.getElementsByClassName(`${item}Text_${num[1]}_${num[2]}`);
+
+                    console.log(lightText);
+                    Array.from(lightText).forEach(function (element) {
+                        element.classList.add('light');
+                        // 指定時間後去掉發光效果
+                        setTimeout(function () {
+                            element.classList.remove("light");
+                        }, 1000);
+                    });
+                }
+            }
         }
 
         // 返回主頁的按鈕

@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Class Example</title>
 </head>
-
 <body>
-    <script>
-        const numberOfVariables = 3;
+  <div class="A">你好</div>
 
-        // 使用迴圈宣告變數並賦值
-        for (let i = 1; i <= numberOfVariables; i++) {
-            window[`A${i}`] = (i === 1) ? '你好' : (i === 2) ? '你不好' : '我很好';
-        }
+  <script>
+    // 选择所有带有类名 "A" 的元素
+    var elementsWithClassA = document.querySelectorAll('.A');
 
-        // 使用範例，輸出變數的值
-        for (let i = 1; i <= numberOfVariables; i++) {
-            console.log(`A${i}: ${window[`A${i}`]}`);
-        }
+    // 遍历每个匹配的元素，添加新的类名 "B"
+    elementsWithClassA.forEach(function(element) {
+      element.classList.add('B');
+    });
 
-    </script>
-
+    console.log("已新增类名 'B' 到所有带有类名 'A' 的元素。");
+  </script>
 </body>
-
 </html>
