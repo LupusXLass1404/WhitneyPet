@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+
+<body>
+    <script>
+        const numberOfVariables = 3;
+
+        // 使用迴圈宣告變數並賦值
+        for (let i = 1; i <= numberOfVariables; i++) {
+            window[`A${i}`] = (i === 1) ? '你好' : (i === 2) ? '你不好' : '我很好';
+        }
+
+        // 使用範例，輸出變數的值
+        for (let i = 1; i <= numberOfVariables; i++) {
+            console.log(`A${i}: ${window[`A${i}`]}`);
+        }
+
+    </script>
+
+</body>
+
+</html>
