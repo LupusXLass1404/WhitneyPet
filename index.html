@@ -18,8 +18,8 @@
 
     <div id="content"></div>
     <div id="main"></div>
-    <div id="diff">4444</div>
-    <div id="text">123312</div>
+    <div id="diff">Diff：</div>
+    <div id="text">Text：</div>
     <br />
     <div id="show"><button>返回</button></div>
     <!-- <h2>告白</h2>
@@ -214,24 +214,24 @@
                         // console.log(diff[`${linkId}`][d]);
                         for (a = 0; a < diff[`${linkId}`][d].length; a++) {
                             // console.log(diff[`${linkId}`][d][a][0]);
-                            diffStr += `<span id='${linkId}${d}_${a}' class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
+                            diffStr += `<span id='${linkId}Diff${d}_${a}' class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
                         }
                     }
-                    Diff[`${linkId}`] = diffStr;
+                    Diff[`${linkId}`] = `${diffStr}`;
+                    // console.log(Diff[`${linkId}`]);
                 }
             }
-            mainChange();
-            // diffHide();
-            textHide();
-            console.log(Diff);
-        }
-
-        // 差分建構
-        for (let key in Diff) {
-            if (Diff.hasOwnProperty(key)) {
-                console.log(`${key}: ${Diff[key]}`);
+            for (let key in Diff) {
+                // console.log(`${key}: ${Diff[key]}`);
+                diffId.innerHTML += `${key}: ${Diff[key]}`;
             }
+            mainChange();
+            diffHide();
+            textHide();
         }
+        
+        
+
 
 
 
@@ -251,7 +251,7 @@
 
                     // for (a = 0; a < diff[`${linkId}`][d].length; a++) {
                     //     console.log(linkId+d+'_'+a);
-                    //     document.getElementById(`${linkId}${d}_${a}`).onclick = function () { mainHide(); textChange(linkId); };
+                    //     document.getElementById(`${linkId}Diff${d}_${a}`).onclick = function () { mainHide(); textChange(linkId); };
                     // }
                 }
 
@@ -303,7 +303,7 @@
         // 返回主頁的按鈕
         document.getElementById('show').onclick = function () {
             mainShow();
-            // diffHide();
+            diffHide();
             textHide();
         };
 
