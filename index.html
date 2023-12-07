@@ -166,7 +166,7 @@
                     ['打籃球', '丟籃板球']
                 ], [
                     ['喜歡', '喜歡很久', `你交到${diffOut1}朋友了`],
-                    ['不喜歡', '討厭', `你沒交到朋友`]
+                    ['不喜歡', '討厭', ``]
                 ], [
                     ['溫順', '溫柔'],
                     ['中立', '急切'],
@@ -225,9 +225,9 @@
                         for (a = 0; a < diff[`${linkId}`][d].length; a++) {
                             // console.log(diff[`${linkId}`][d][a][0]);
                             diffStr += `<span id="${linkId}Diff_${d}_${a}" class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
-                            for (l = 1; l < diff[`${linkId}`][d][a].length; l++) {
-                                console.log(diff[`${linkId}`][d][a][l]);
-                                diff[`${linkId}`][d][a][l] = `<span class="${linkId}Text_${d}_${a}">${diff[`${linkId}`][d][a][l]}</span>`
+                            for (t = 1; t < diff[`${linkId}`][d][a].length; t++) {
+                                // console.log(diff[`${linkId}`][d][a][t]);
+                                diff[`${linkId}`][d][a][t] = `<span class="${linkId}Text_${d}_${a}">${diff[`${linkId}`][d][a][t]}</span>`
                             }
                         }
                     }
@@ -310,13 +310,17 @@
         function mainChange() {
             mainId.innerHTML = Main;
         }
+
+        // 宣告差分參數物件
+        let T = {};
+
         // 改變文本
         function textChange(item, itemId) {
             // console.log(item, itemId);
             let DI = diff[`${item}`];
-            let type = 0;
-            let T = {};
+            let typeCheck = '';
 
+            // 差分物件參數預設為0
             for (let i = 0; i < DI.length; i++) {
                 T[`${i}`] = 0;
             }
@@ -326,7 +330,7 @@
                 const num = itemId.match(/_(\d+)_(\d+)/);
                 if (num) {
                     // num[1] 匹配第一個數字，num[2] 匹配第二個數字
-                    type = parseInt(num[1], 10);
+                    let type = parseInt(num[1], 10);
                     T[`${type}`] = parseInt(num[2], 10);
                     // console.log(type);
                     // console.log(T);
@@ -349,14 +353,13 @@
             textId.innerHTML = text[item];
             diffClick(item)
 
+            // 讓變更的文字發光
             if (itemId !== undefined) {
                 const num = itemId.match(/_(\d+)_(\d+)/);
                 if (num) {
-                    // 讓變更的文字發光``
                     // console.log(`${item}Text_${num[1]}_${num[2]}`);
                     let lightText = document.getElementsByClassName(`${item}Text_${num[1]}_${num[2]}`);
-
-                    console.log(lightText);
+                    // 遍歷class屬性
                     Array.from(lightText).forEach(function (element) {
                         element.classList.add('light');
                         // 指定時間後去掉發光效果
