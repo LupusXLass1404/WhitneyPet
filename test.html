@@ -3,21 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Class Example</title>
+  <style>
+    .gold {
+      color: gold;
+    }
+  </style>
+  <title>差分文本檢視系統</title>
 </head>
 <body>
-  <div class="A">你好</div>
+  <div id="textContainer">
+    <p>你在"<span id="location">地點</span>"</p>
+    <p>你"<span id="feeling">好感</span>"人跟你表白</p>
+    <p><span class="gold" id="friendship">你交到「<span id="gender">性別</span>」朋友了！</span></p>
+  </div>
+
+  <button onclick="changeLocation('公園')">公園</button>
+  <button onclick="changeLocation('人行道')">人行道</button>
+  <button onclick="changeLocation('學校')">學校</button>
+
+  <button onclick="changeFeeling('喜歡的')">喜歡的</button>
+  <button onclick="changeFeeling('不喜歡的')">不喜歡的</button>
 
   <script>
-    // 选择所有带有类名 "A" 的元素
-    var elementsWithClassA = document.querySelectorAll('.A');
+    // 初始化数据对象
+    var data = {
+      location: ['公園', '人行道', '學校'],
+      feeling: ['喜歡的', '不喜歡的'],
+      gender: ['男', '女']
+    };
 
-    // 遍历每个匹配的元素，添加新的类名 "B"
-    elementsWithClassA.forEach(function(element) {
-      element.classList.add('B');
-    });
+    function changeLocation(newLocation) {
+      document.getElementById('location').innerHTML = newLocation;
+    }
 
-    console.log("已新增类名 'B' 到所有带有类名 'A' 的元素。");
+    function changeFeeling(newFeeling) {
+      var feelingElement = document.getElementById('feeling');
+      var friendshipElement = document.getElementById('friendship');
+      
+      feelingElement.innerHTML = newFeeling;
+
+      // 如果好感是喜歡的，显示交到朋友的信息，否则隐藏
+      if (newFeeling === '喜歡的') {
+        friendshipElement.style.display = 'inline';
+      } else {
+        friendshipElement.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>
