@@ -24,11 +24,11 @@
   <script>
     // 他把你推到牆上。
     // 他說：「［（高愛）你真的很可愛，［（男）男孩／（女）女孩］。／（低愛）我討厭你，［（男）渾蛋／（女）三八］。］」
-    
+
     // 有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位，［（男）男孩／（女）女孩］。"
     // <br><br>
     // 他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
-  
+
     let text = {
       cp: `
         有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位。"
@@ -40,7 +40,7 @@
     let textt;
 
     function variantObj() {
-      
+
 
     }
 
@@ -48,43 +48,49 @@
       let content = text.cp;
       let match = content.match(/［(.*?)］/g);
 
-      content = content.replace(/［(.*?)］/g, '［替換文字］');
+      content = content.replace(/［(.*?)］/g, '<span class="replace"></span>');
       match = match[0].replace(/［(.*?)］/g, '$1');
       match = match.split('／');
+      // console.log(match);
+      // console.log(content);
+      document.getElementById('main').innerHTML = content;
 
       let tag = []
 
       match.forEach((value, index) => {
-        console.log(`value: ${value}, index: ${index}`);
+        // console.log(`value: ${value}, index: ${index}`);
         let temp = value.match(/（(.*?)）/g);
-        let temp2 = match[0].replace(/（(.*?)）/g, '$1');
-        
-        console.log(temp);
-        
+        let temp2 = temp[0].replace(/（(.*?)）/g, '$1');
+        // console.log(temp);
+
+        tag.push(temp2);
+        document.getElementById('button').insertAdjacentHTML('beforeend', `<button class="button" data-id="${temp2}_${index}" type="button">${temp2}</button>`);
+
+        let button = document.querySelector(`[data-id="${temp2}_${index}"]`);
+        console.log(button);
+
+        if(index == 0){
+          document.querySelector('span.replace').innerHTML = `${value}`;
+        }
+
+        button.addEventListener('click', function() {
+          document.querySelector('span.replace').innerHTML = `${value}`;
+          console.log(index);
+        });
+
+
+
       })
-      
-
-      // smail = match[0].match(/（(.*?)）/g);
-
-     
-      
-      console.log(match);
-      console.log(content);
-      // console.log(smail);
 
 
-      
+
+
 
 
     }
 
-    
-
-
-    document.getElementById('main').innerHTML = text.cp;
     passageShow()
 
-   
   </script>
 </body>
 </html>
