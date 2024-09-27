@@ -7,48 +7,84 @@
     .gold {
       color: gold;
     }
+    .red {
+      color: red;
+    }
+    .pink {
+      color: rgb(241, 25, 104);
+    }
+
   </style>
   <title>差分文本檢視系統</title>
 </head>
 <body>
-  <div id="textContainer">
-    <p>你在"<span id="location">地點</span>"</p>
-    <p>你"<span id="feeling">好感</span>"人跟你表白</p>
-    <p><span class="gold" id="friendship">你交到「<span id="gender">性別</span>」朋友了！</span></p>
-  </div>
-
-  <button onclick="changeLocation('公園')">公園</button>
-  <button onclick="changeLocation('人行道')">人行道</button>
-  <button onclick="changeLocation('學校')">學校</button>
-
-  <button onclick="changeFeeling('喜歡的')">喜歡的</button>
-  <button onclick="changeFeeling('不喜歡的')">不喜歡的</button>
+  <div id="main"></div>
+  <div id="button"></div>
 
   <script>
-    // 初始化数据对象
-    var data = {
-      location: ['公園', '人行道', '學校'],
-      feeling: ['喜歡的', '不喜歡的'],
-      gender: ['男', '女']
-    };
-
-    function changeLocation(newLocation) {
-      document.getElementById('location').innerHTML = newLocation;
+    // 他把你推到牆上。
+    // 他說：「［（高愛）你真的很可愛，［（男）男孩／（女）女孩］。／（低愛）我討厭你，［（男）渾蛋／（女）三八］。］」
+    
+    // 有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位，［（男）男孩／（女）女孩］。"
+    // <br><br>
+    // 他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
+  
+    let text = {
+      cp: `
+        有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位。"
+        <br><br>
+        他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
+      `,
     }
 
-    function changeFeeling(newFeeling) {
-      var feelingElement = document.getElementById('feeling');
-      var friendshipElement = document.getElementById('friendship');
+    let textt;
+
+    function variantObj() {
       
-      feelingElement.innerHTML = newFeeling;
 
-      // 如果好感是喜歡的，显示交到朋友的信息，否则隐藏
-      if (newFeeling === '喜歡的') {
-        friendshipElement.style.display = 'inline';
-      } else {
-        friendshipElement.style.display = 'none';
-      }
     }
+
+    function passageShow() {
+      let content = text.cp;
+      let match = content.match(/［(.*?)］/g);
+
+      content = content.replace(/［(.*?)］/g, '［替換文字］');
+      match = match[0].replace(/［(.*?)］/g, '$1');
+      match = match.split('／');
+
+      let tag = []
+
+      match.forEach((value, index) => {
+        console.log(`value: ${value}, index: ${index}`);
+        let temp = value.match(/（(.*?)）/g);
+        let temp2 = match[0].replace(/（(.*?)）/g, '$1');
+        
+        console.log(temp);
+        
+      })
+      
+
+      // smail = match[0].match(/（(.*?)）/g);
+
+     
+      
+      console.log(match);
+      console.log(content);
+      // console.log(smail);
+
+
+      
+
+
+    }
+
+    
+
+
+    document.getElementById('main').innerHTML = text.cp;
+    passageShow()
+
+   
   </script>
 </body>
 </html>

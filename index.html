@@ -28,82 +28,29 @@
 </head>
 
 <body>
-    <div id="main"></div><br />
-    <!-- <div id="diffTip">目前差分：</div> -->
-    <div id="diff">Diff：</div><br />
-    <div id="text">Text：</div><br />
-    <div id="opts">Opts：</div><br />
+    <div id="main"></div>
+    <br>
+    <div id="passage">（passage）</div>
+    <br>
     <div id="show"><button>返回</button></div>
-    <!-- <h2>告白</h2>
-    <p id="main">操場｜小巷｜噴水池</p> -->
-
 
     <script>
+        // 我的功能是要使用者點擊link之後，會變更文字
+        // 預設的文字會是第一個變更點
+        // 但文字裡也會有變更
+        // 感覺要寫一個變更的fn
+
         // eventscourtyard
         // bullyeventstreet
         // schoolbully
 
-        let Main = '';
-        let Diff = {};
-        let mainId = document.getElementById('main');
-        let diffId = document.getElementById('diff');
-        let textId = document.getElementById('text');
-        let OptsId = document.getElementById('opts');
-        let mainLink = [
-            // {
-            //     h2: '',
-            //     h3: '',
-            //     link: [
-            //         '',
-            //         ''
-            //     ],
-            //     id: [
-            //         '',
-            //         '',
-            //     ]
-            // },
-            // {
-            //     h2: '學霸',
-            //     h3: '',
-            //     link: [
-            //         '學齡1',
-            //         '學齡2'
-            //     ],
-            //     id: [
-            //         'whitneySchoolBully1',
-            //         'whitneySchoolBully2',
-            //     ]
-            // },
-            // {
-            //     h2: '節日',
-            //     h3: '萬聖節',
-            //     link: [
-            //         '惠特尼的萬聖節',
-            //         '凱拉爾的萬聖節'
-            //     ],
-            //     id: [
-            //         'Kla',
-            //         'Klaa',
-            //     ]
-            // },
-            // {
-            //     h2: '放逐',
-            //     h3: '',
-            //     link: [
-            //         '暈倒',
-            //         '詢問發生了什麼事',
-            //         '尋人啟事'
-            //     ],
-            //     id: [
-            //         'whitney1',
-            //         'whitney3',
-            //         'whitney2',
-            //     ]
-            // },
+        var initCheck = false;
+
+        let mainContent = [
             {
                 h2: '告白',
                 h3: '',
-                link: [
+                event: [
                     '操場',
                     '小巷',
                     '噴水池'
@@ -116,266 +63,283 @@
             }
         ]
 
-        let commonText = {
-            red: '<span class="red">壓力</span>',
-        }
-
-        let diffOut1 = '';
-        let diffOut2 = '';
-        let diffOut3 = '';
-
-        let diff = {
-            // whitneyConfessCourtyard: {
-            //     link: [
-            //         [
-            //             '跑步',
-            //             '打籃球'
-            //         ], [
-            //             '喜歡',
-            //             '不喜歡'
-            //         ], [
-            //             '溫順',
-            //             '中立',
-            //             '抗拒'
-            //         ], [
-            //             '男LI',
-            //             '女LI'
-            //         ]
-            //     ],
-            //     text: [
-            //         [
-            //             '跑100米',
-            //             '丟籃板球'
-            //         ], [
-            //             '喜歡很久',
-            //             '討厭'
-            //         ], [
-            //             '溫柔',
-            //             '急切',
-            //             '自信'
-            //         ], [
-            //             '男',
-            //             '女'
-            //         ]
-            //     ]
-            // },
-
-            whitneyConfessCourtyard: [
-                [
-                    ['跑步', '跑100米'],
-                    ['打籃球', '丟籃板球']
-                ], [
-                    ['喜歡', '喜歡很久', `你交到${diffOut1}朋友了`],
-                    ['不喜歡', '討厭', ``]
-                ], [
-                    ['溫順', '溫柔'],
-                    ['中立', '急切'],
-                    ['抗拒', '自信']
-                ], [
-                    ['男LI', '男'],
-                    ['女LI', '女']
-                ]
-            ],
-            whitneyConfessStreet: [
-                [
-                    ['你不好',]
-                ],
-            ],
-            whitneyConfessPark: [
-                [
-                    ['你好',]
-                ],
-            ],
-        }
-
-        
-            
-      
-
-
-        // <p>你在［跑步、打籃球］，</p><p>你［不喜歡／喜歡］的人跟你告白，</p><p>你［溫順／普通／抗拒］的回復。</p>［<span class="gold">你交到［男／女］朋友了</span>］
-        // `<p>你在${linkId[0][1]}，</p><p>你${好感}的人跟你告白，</p><p>你${態度}的回復。</p>${好感${性別}}
-        // console.log(mainLink[0].link); //測試json用
-
-        // 首頁
         function main() {
-            for (i = 0; i < mainLink.length; i++) {
-                // 插入首頁標題
-                Main += `<h2>${mainLink[i].h2}</h2>`;
-                Main += `<h3>${mainLink[i].h3}</h3>`;
-                // 插入首頁連結
-                for (n = 0; n < mainLink[i].link.length; n++) {
-                    let linkId = mainLink[i].id[n];
-                    Main += `<span id="${linkId}" class="link">${mainLink[i].link[n]}</span>`;
+            let Main = '';
+            for (i = 0; i < mainContent.length; i++) {
+                let content = mainContent[i];
 
-                    // 首頁連結插入分隔號，但最後一個不要插入
-                    if (n !== (mainLink[i].link.length - 1)) {
+                // 插入標題
+                Main += `<h2>${content.h2}</h2>`;
+                Main += `<h3>${content.h3}</h3>`;
+
+                // 插入活動連結
+                for (n = 0; n < content.event.length; n++) {
+                    let linkId = content.id[n];
+                    Main += `<span id="${linkId}" class="link">${content.event[n]}</span>`;
+
+                    // 連結插入分隔號，但最後一個不要插入
+                    if (n !== (content.event.length - 1)) {
                         Main += `｜`;
                     }
-                    // 更新首頁文字
-                    mainId.innerHTML = Main;
 
-                    // 建構差分選項
-                    let diffStr = '';
-                    for (d = 0; d < diff[`${linkId}`].length; d++) {
-                        // console.log(diff[`${linkId}`][d]);
-                        for (a = 0; a < diff[`${linkId}`][d].length; a++) {
-                            // console.log(diff[`${linkId}`][d][a][0]);
-                            diffStr += `<span id="${linkId}Diff_${d}_${a}" class="link">${diff[`${linkId}`][d][a][0]}</span>｜`;
-                            for (t = 1; t < diff[`${linkId}`][d][a].length; t++) {
-                                // console.log(diff[`${linkId}`][d][a][t]);
-                                diff[`${linkId}`][d][a][t] = `<span class="${linkId}Text_${d}_${a}">${diff[`${linkId}`][d][a][t]}</span>`
-                            }
-                        }
-                    }
-                    Diff[`${linkId}`] = `${diffStr}`;
-                    // console.log(Diff[`${linkId}`]);
+                    // 更新首頁內容
+                    document.getElementById('main').innerHTML = Main;
                 }
             }
-            for (let key in Diff) {
-                // console.log(`${key}: ${Diff[key]}`);
-                diffId.innerHTML += `${key}: ${Diff[key]}`;
-            }
-            mainChange();
-            diffHide();
-            textHide();
         }
 
         // 初始化
         main();
 
-        // 首頁點擊事件
-        for (i = 0; i < mainLink.length; i++) {
-            for (n = 0; n < mainLink[i].link.length; n++) {
-                let linkId = mainLink[i].id[n];
-                document.getElementById(linkId).onclick = function () {
-                    mainHide();
-                    textChange(linkId);
-                };
+        let T = {
+            red: '<span class="red">壓力</span>',
+        }
 
+        // let passage = {
+        //     whitneyConfessCourtyard:
+        //         `<p>你在${V("運動")}，</p><p>你${V("好感")}的人跟你告白，</p><p>你${V("態度")}的回復。</p>`,
+        // }
+        // ${V("好感", 2)}
+
+        // 提取所有的 condition
+        // const conditions = whitneyConfessCourtyard.map(item => item.condition);
+        // 找到 condition 為 "運動" 的對象
+        // const sportCondition = whitneyConfessCourtyard.find(item => item.condition === "運動");
+
+       
+        let passage = {
+            whitneyConfessCourtyard: [
+                {
+                    content: () => `<p>你在${V("運動")}，</p><p>你${V("好感")}的人跟你告白，</p><p>你${V("態度")}的回復。</p>`,
+                },
+                {
+                    type: "運動",
+                    variants: () => [
+                        {
+                            link: "跑步",
+                            text: ["跑100米"],
+                        },
+                        {
+                            link: "打籃球",
+                            text: ["丟籃板球"],
+                        }
+                    ]
+                },
+                {
+                    type: "好感",
+                    variants: () => [
+                        {
+                            link: "高好感",
+                            text: ['喜歡很久', `你交到${V("LI性別")}朋友了`],
+                        },
+                        {
+                            link: "低好感",
+                            text: ["討厭"],
+                        }
+                    ]
+                },
+                {
+                    type: "態度",
+                    variants: () => [
+                        {
+                            link: "溫順",
+                            text: ["溫柔"],
+                        },
+                        {
+                            link: "中立",
+                            text: ["急切"],
+                        }
+                        ,
+                        {
+                            link: "抗拒",
+                            text: ["自信"],
+                        }
+                    ]
+                },
+                {
+                    type: "LI性別",
+                    variants: () => [
+                        {
+                            link: "男LI",
+                            text: ["男"],
+                        },
+                        {
+                            link: "女LI",
+                            text: ["女"],
+                        }
+                    ]
+                },
+            ]
+        }
+        
+        function V(type, text) {
+            if (initCheck == false) {
+                console.log(`未初始化`)
+                return ``;
+            } else {
+                console.log(`已初始化`)
+                let vObj = passage.whitneyConfessCourtyard.find(item => item.type == type);
+                let obj = vObj.variants();
+                return obj[1].text; 
             }
         }
 
-        // 差分點擊事件
-        function diffClick(item) {
-            for (d = 0; d < diff[`${item}`].length; d++) {
-                // console.log(diff[`${linkId}`][d]);
-                for (a = 0; a < diff[`${item}`][d].length; a++) {
-                    // console.log(linkId + d + '_' + a);
-                    document.getElementById(`${item}Diff_${d}_${a}`).onclick = function () {
-                        // console.log('點擊事件的 ID:', this.id);
-                        textChange(item, this.id);
-                    };
-                }
-            }
+        function test(){
+
+            initCheck = true;
+            document.getElementById('diff').innerHTML = passage.whitneyConfessCourtyard[0].content();
+            
         }
 
-        // 顯示首頁
-        function mainShow() {
-            mainId.style.display = 'block';
-        }
-        // 隱藏首頁
-        function mainHide() {
-            mainId.style.display = 'none';
-        }
-        // 顯示差分
-        function diffShow() {
-            diffId.style.display = 'block';
-        }
-        // 隱藏差分
-        function diffHide() {
-            diffId.style.display = 'none';
-        }
-        // 顯示文本
-        function textShow() {
-            textId.style.display = 'block';
-        }
-        // 隱藏文本
-        function textHide() {
-            textId.style.display = 'none';
-        }
-        // 顯示選項
-        function optsShow() {
-            optsId.style.display = 'block';
-        }
-        // 隱藏選項
-        function optsHide() {
-            optsId.style.display = 'none';
-        }
+        test()
 
-        // 構建首頁
-        function mainChange() {
-            mainId.innerHTML = Main;
-        }
+        
+            
 
-        // 宣告差分參數物件
-        let T = {};
+        // console.log(mainLink[0].link); //測試json用
+
+        // 首頁
+        // function he(){
+        //     return "girl";
+        // }
+
+
+
+        // // 首頁點擊事件
+        // for (i = 0; i < mainLink.length; i++) {
+        //     for (n = 0; n < mainLink[i].link.length; n++) {
+        //         let linkId = mainLink[i].id[n];
+        //         document.getElementById(linkId).onclick = function () {
+        //             mainHide();
+        //             textChange(linkId);
+        //         };
+
+        //     }
+        // }
+
+
+        // // 差分點擊事件
+        // function diffClick(item) {
+        //     for (d = 0; d < diff[`${item}`].length; d++) {
+        //         // console.log(diff[`${linkId}`][d]);
+        //         for (a = 0; a < diff[`${item}`][d].length; a++) {
+        //             // console.log(linkId + d + '_' + a);
+        //             document.getElementById(`${item}Diff_${d}_${a}`).onclick = function () {
+        //                 // console.log('點擊事件的 ID:', this.id);
+        //                 textChange(item, this.id);
+        //             };
+        //         }
+        //     }
+        // }
+
+        
+
+        // // 顯示首頁
+        // function mainShow() {
+        //     mainId.style.display = 'block';
+        // }
+        // // 隱藏首頁
+        // function mainHide() {
+        //     mainId.style.display = 'none';
+        // }
+        // // 顯示差分
+        // function diffShow() {
+        //     diffId.style.display = 'block';
+        // }
+        // // 隱藏差分
+        // function diffHide() {
+        //     diffId.style.display = 'none';
+        // }
+        // // 顯示文本
+        // function textShow() {
+        //     textId.style.display = 'block';
+        // }
+        // // 隱藏文本
+        // function textHide() {
+        //     textId.style.display = 'none';
+        // }
+        // // 顯示選項
+        // function optsShow() {
+        //     optsId.style.display = 'block';
+        // }
+        // // 隱藏選項
+        // function optsHide() {
+        //     optsId.style.display = 'none';
+        // }
+
+        // // 構建首頁
+        // function mainChange() {
+        //     mainId.innerHTML = Main;
+        // }
+
+        // // 宣告差分參數物件
+        // let T = {};
 
 
         
-        // 改變文本
-        function textChange(item, itemId) {
-            // console.log(item, itemId);
-            let DI = diff[`${item}`];
-            let typeCheck = '';
+        // // 改變文本
+        // function textChange(item, itemId) {
+        //     // console.log(item, itemId);
+        //     let DI = diff[`${item}`];
+        //     let typeCheck = '';
 
-            // 差分物件參數預設為0
-            for (let i = 0; i < DI.length; i++) {
-                T[`${i}`] = 0;
-            }
+        //     // 差分物件參數預設為0
+        //     for (let i = 0; i < DI.length; i++) {
+        //         T[`${i}`] = 0;
+        //     }
 
-            // 使用正則表達式匹配並提取數字
-            if (itemId !== undefined) {
-                const num = itemId.match(/_(\d+)_(\d+)/);
-                if (num) {
-                    // num[1] 匹配第一個數字，num[2] 匹配第二個數字
-                    let type = parseInt(num[1], 10);
-                    T[`${type}`] = parseInt(num[2], 10);
-                    // console.log(type);
-                    // console.log(T);
-                }
-            }
+        //     // 使用正則表達式匹配並提取數字
+        //     if (itemId !== undefined) {
+        //         const num = itemId.match(/_(\d+)_(\d+)/);
+        //         if (num) {
+        //             // num[1] 匹配第一個數字，num[2] 匹配第二個數字
+        //             let type = parseInt(num[1], 10);
+        //             T[`${type}`] = parseInt(num[2], 10);
+        //             // console.log(type);
+        //             // console.log(T);
+        //         }
+        //     }
 
-            let text = {
-                whitneyConfessCourtyard:
-                    `<p>你在${DI[0][T[0]][1]}，</p><p>你${DI[1][T[1]][1]}的人跟你告白，</p><p>你${DI[2][T[2]][1]}的回復。</p>${DI[1][T[1]][2]}`,
-                whitneyConfessStreet:
-                    `<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>`,
-                whitneyConfessPark:
-                    `<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>`,
-            }
+        //     let text = {
+        //         whitneyConfessCourtyard:
+        //             `<p>你在${DI[0][T[0]][1]}，</p><p>你${DI[1][T[1]][1]}的人跟你告白，</p><p>你${DI[2][T[2]][1]}的回復。</p>${DI[1][T[1]][2]}`,
+        //         whitneyConfessStreet:
+        //             `<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>`,
+        //         whitneyConfessPark:
+        //             `<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>`,
+        //     }
 
-            mainHide();
-            diffShow();
-            textShow();
-            diffId.innerHTML = Diff[item];
-            textId.innerHTML = text[item];
-            diffClick(item)
+        //     mainHide();
+        //     diffShow();
+        //     textShow();
+        //     diffId.innerHTML = Diff[item];
+        //     textId.innerHTML = text[item];
+        //     diffClick(item)
 
-            // 讓變更的文字發光
-            if (itemId !== undefined) {
-                const num = itemId.match(/_(\d+)_(\d+)/);
-                if (num) {
-                    // console.log(`${item}Text_${num[1]}_${num[2]}`);
-                    let lightText = document.getElementsByClassName(`${item}Text_${num[1]}_${num[2]}`);
-                    // 遍歷class屬性
-                    Array.from(lightText).forEach(function (element) {
-                        element.classList.add('light');
-                        // 指定時間後去掉發光效果
-                        setTimeout(function () {
-                            element.classList.remove("light");
-                        }, 1000);
-                    });
-                }
-            }
-        }
+        //     // 讓變更的文字發光
+        //     if (itemId !== undefined) {
+        //         const num = itemId.match(/_(\d+)_(\d+)/);
+        //         if (num) {
+        //             // console.log(`${item}Text_${num[1]}_${num[2]}`);
+        //             let lightText = document.getElementsByClassName(`${item}Text_${num[1]}_${num[2]}`);
+        //             // 遍歷class屬性
+        //             Array.from(lightText).forEach(function (element) {
+        //                 element.classList.add('light');
+        //                 // 指定時間後去掉發光效果
+        //                 setTimeout(function () {
+        //                     element.classList.remove("light");
+        //                 }, 1000);
+        //             });
+        //         }
+        //     }
+        // }
 
-        // 返回主頁的按鈕
-        document.getElementById('show').onclick = function () {
-            mainShow();
-            diffHide();
-            textHide();
-        };
+        // // 返回主頁的按鈕
+        // document.getElementById('show').onclick = function () {
+        //     mainShow();
+        //     diffHide();
+        //     textHide();
+        // };
     </script>
 
 </body>
