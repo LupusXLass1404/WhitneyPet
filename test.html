@@ -78,24 +78,30 @@
 
       
         // 刪除最外圍的［］
-        let content = matches[0].replace(/^［|］$/g, '');
+        let passageContent = matches[0].replace(/^［|］$/g, '');
         // console.log("content: " + content);
         // 去除［］內的內容
-        let cleanContent = content.replace(regex, '');
+        let cleanContent = passageContent.replace(regex, '');
         // console.log("cleanContent: " + cleanContent);
         // 抓取（）內的內容
         let matcheVariant = [...cleanContent.matchAll(/（(.*?)）/g)];
         // console.log(matcheLink);
-
-        let variant = [];
-        matcheVariant.forEach(match => {
-          variant.push(match[1]);
-          // console.log(match[1]);
-          
-         
+        
+        let variantLink = [];
+        let variantContent = [];
+        let variantRegex = "/";
+        matcheVariant.forEach((match, index) => {
+          variantLink.push(match[1]);
+          variantRegex += match[0] + "(.+?)";
+          if(index > matcheVariant.length-1)
+          console.log(index);         
+          // console.log(match[1]);         
         });
-        console.log(variant);
+        // console.log(variantLink);
 
+
+
+       
 
 
 
