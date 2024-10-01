@@ -25,20 +25,27 @@
   <div id="variant"></div><!-- 變數 -->
 
   <script>
-   function extractParenthesesContent(text) {
-    // 移除方括号及其内容
-    const cleanedText = text.replace(/\[[^\]]*\]/g, '');
-    console.
-    // 匹配括号内的内容
-    const matches = cleanedText.match(/\(([^)]+)\)/g);
-    
-    return matches ? matches.map(match => match.slice(1, -1)) : [];
+   const text = `（生理性別與外表性別一致）然后松开了你，［（男）男孩／（女）女孩］。／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你`;
+
+// 使用正则表达式捕捉需要的部分
+const regex = /（生理性別與外表性別一致）(.*?)\/|（生理性別與外表性別不同）(.*)/g;
+
+// 存储匹配结果
+const matches = [];
+let match;
+
+while ((match = regex.exec(text)) !== null) {
+    // 捕捉每个匹配项
+    if (match[1]) {
+        matches.push(match[1].trim());
+    }
+    if (match[2]) {
+        matches.push(match[2].trim());
+    }
 }
 
-const inputText = "(生理性別與外表性別一致)然后松开了你，[(男)男孩／(女)女孩]。／(生理性別與外表性別不同)皱着眉头停顿了一会儿才松开你";
-const outputContent = extractParenthesesContent(inputText);
-
-console.log(outputContent);
+// 输出结果
+console.log(matches);
 
   </script>
 </body>

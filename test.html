@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>惠特尼的寵物項圈</title>
   <style>
+    body {
+      background: #111;
+      color: #eee;
+    }
+
     .gold {
       color: gold;
     }
+
     .red {
       color: red;
     }
+
     .pink {
       color: rgb(241, 25, 104);
     }
-
   </style>
-  <title>差分文本檢視系統</title>
 </head>
+
 <body>
-  <div id="main"></div><!-- 放主選單 -->
-  <button class="button" data-passage="start" type="button">Start</button>
-  
+
+  <div id="main">
+    <button class="mainLink" data-passage="cp" type="button">cp</button>
+    <button class="mainLink" data-passage="cb" type="button">cb</button>
+  </div><!-- 放主選單 -->
+
   <div id="passage"></div><!-- 文本 -->
   <div id="variant"></div><!-- 變數 -->
+
+  <div id="back">
+    <br><br>
+    <button class="main" type="button">返回</button>
+  </div>
 
   <script>
     // 他把你推到牆上。
@@ -32,20 +48,11 @@
     // <br><br>
     // 他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
 
-    let text = {
-      cp: `
-        有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位。"
-        <br><br>
-        他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你，［（男）男孩／（女）女孩］。／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
-      `,
-    }
-// ［（link／支配>10）高支］
-// ［（link／支配<10）低支］
-// ［（rng）你很可愛／你很美／你很火辣］
-    let textt;
 
-    function variantObj() {
-    }
+    // ［（link／支配>10）高支］
+    // ［（link／支配<10）低支］
+    // ［（rng）你很可愛／你很美／你很火辣］
+
 
     // 我覺得我可以把一個［］內的物件全部選取，提取。然後再搜尋這個物件一次。直到沒有［］才跳出迴圈
     // 由於每次進入一個新的段落都會迴圈一次，所以id可以重複用
@@ -61,71 +68,156 @@
     // 最後要把passage清除。
     // 主選單表要跟main分開
 
+    let mainId = document.getElementById('main');
     let passageID = document.getElementById('passage');
-    let passage = document.querySelector(`[data-passage="start"]`);
-    passage.addEventListener('click', function() {
-      passageCheck(); 
-    });
+    let variantID = document.getElementById('variant');
+    let passageClick = document.querySelectorAll(`[data-passage]`);
+    let numCheck = 0;
 
-    
-      passageID.innerHTML = text.cp;
-      
-
-      let regex = /［（(\W+)）(.*?)］/g;
-      // let matches = passageID.innerHTML.match(regex);
-      let matches = passageID.innerHTML.match(regex);
-      // console.log("matches: " + matches);
-
-      
-        // 刪除最外圍的［］
-        let passageContent = matches[0].replace(/^［|］$/g, '');
-        // console.log("content: " + content);
-        // 去除［］內的內容
-        let cleanContent = passageContent.replace(regex, '');
-        // console.log("cleanContent: " + cleanContent);
-        // 抓取（）內的內容
-        let matcheVariant = [...cleanContent.matchAll(/（(.*?)）/g)];
-        // console.log(matcheLink);
-        
-        let variantLink = [];
-        let variantContent = [];
-        let variantRegex = "/";
-        matcheVariant.forEach((match, index) => {
-          variantLink.push(match[1]);
-          variantRegex += match[0] + "(.+?)";
-          if(index > matcheVariant.length-1)
-          console.log(index);         
-          // console.log(match[1]);         
-        });
-        // console.log(variantLink);
-
-
-
-       
-
-
-
-
-        
-       
-
-       
-        
-
-
-        // let content = matches[0].match(/\（(.+?)\）/g);
-
-        
-
-        
-        // matchelike
-        if (passageID.innerHTML.match(regex)){
-      }
-
-    function passageCheck() {
+    // 顯示首頁
+    function mainShow() {
+      mainId.style.display = 'block';
+    }
+    // 隱藏首頁
+    function mainHide() {
+      mainId.style.display = 'none';
     }
 
-    
+    let text = {
+      cp: `
+        有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位。"
+        <br><br>
+        他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你，「［（男）男孩／（女）女孩］」／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
+      `,
+      cb: `
+      ［（沒穿上衣）惠特尼和他朋友们包围了你，把你逼到紧靠着储物柜。“不穿件上衣就到处晃？”他说。“我打赌你就喜欢这样来吸引男孩们的注意。”他转向他朋友们。“来吧，我们有比取悦这婊子更好的事做。”他们没再进一步骚扰你。／（穿著上衣）惠特尼和他的朋友们包围了你，你不得已抵在储物柜上。“过路费结一下，”他戳了戳你的胸口并抓住你的校服衬衫。“给我们看看你就行。” ］
+      `,
+    }
+    // 目前問題，不知道三套娃能不能成功
+    // 希望能解決換行問題
+
+    // 監聽事件
+    passageClick.forEach(element => {
+      element.addEventListener('click', function () {
+        // 獲取 data-passage 的內容
+        passageID.innerHTML = text[this.getAttribute('data-passage')];
+        mainHide()
+        passageCheck()
+        // console.log(text[this.getAttribute('data-passage')]);
+      });
+    });
+
+    // 返回按鈕
+    document.querySelector('.main').addEventListener('click', function () {
+      mainShow();
+      passageID.innerHTML = "";
+      variantID.innerHTML = "";
+      numCheck = 0;
+    });
+
+    let regex = /［（(\W+)）(.*?)］/g;
+
+    function passageCheck() {
+      // 抓取［］內的文字
+      let matches = passageID.innerHTML.match(regex);
+      // console.log(matches);
+
+      // 加入替換文字的錨點
+      passageID.innerHTML = passageID.innerHTML.replace(regex, `<span class="replace_${numCheck} gold"></span>`);
+      // console.log(passageID.innerHTML);
+
+      // 刪除最外圍的［］
+      let passageContent = matches[0].replace(/^［|］$/g, '');
+      // console.log("content: " + content);
+
+      // 因為要抓取連結按鈕，所以先去除［］內的內容，比較好操作
+      let cleanContent = passageContent.replace(regex, '');
+      // console.log("cleanContent: " + cleanContent);
+
+      // 抓取（）內的內容
+      let matcheVariant = [...cleanContent.matchAll(/（(.*?)）/g)];
+      // console.log(matcheVariant);
+
+      let variantLink = [];
+      let variantRegex = "";
+      matcheVariant.forEach((match, index) => {
+        variantLink.push(match)
+        variantRegex += match[0] + "(.*)";
+        if (matcheVariant.length - 1 > index) {
+          variantRegex += "\\／";
+        } else {
+          variantRegex = RegExp(variantRegex);
+        }
+        // console.log(match[1]);
+      });
+      // 抓取變體文字
+      let variantContent = passageContent.match(variantRegex);
+      // console.log(variantLink);
+
+      variantLink.forEach((link, index) => {
+        variantID.insertAdjacentHTML('beforeend', `<button class="button" data-cond="${link}_${index}" data-num="${numCheck}" type="button">${link[1]}</button>`);
+        // console.log(variantID.innerHTML);
+
+        let button = document.querySelector(`[data-cond="${link}_${index}"]`);
+
+        button.addEventListener('click', function () {
+          document.querySelector(`span.replace_${numCheck}`).innerHTML = variantContent[index + 1];
+
+          // 讀取點擊按鈕的num
+          numCheck = this.getAttribute('data-num');
+
+          // 遍歷所以連結的num
+          variantID.querySelectorAll('[data-num]').forEach(element => {
+            let num = Number(element.getAttribute('data-num'));
+
+            // 如果 num 大於 numCheck，就移除該元素
+            if (num > numCheck) {
+              element.remove();
+            }
+
+          });
+
+          passageCheckAgain()
+        });
+
+        if (index == 0) {
+          document.querySelector(`span.replace_${numCheck}`).innerHTML = variantContent[index + 1];
+        }
+      })
+      passageCheckAgain()
+    }
+
+
+    function passageCheckAgain() {
+      if (passageID.innerHTML.match(regex)) {
+        numCheck += 1;
+        passageCheck();
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // let content = matches[0].match(/\（(.+?)\）/g);
+
+
+
+
+    // matchelike
+
+
+
+
+
+
 
 
     function passageShow() {
@@ -155,11 +247,11 @@
         let button = document.querySelector(`[data-cond="${temp2}_${index}"]`);
         console.log(button);
 
-        if(index == 0){
+        if (index == 0) {
           document.querySelector('span.replace').innerHTML = `${value}`;
         }
 
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           document.querySelector('span.replace').innerHTML = `${value}`;
         });
 
@@ -174,8 +266,9 @@
 
     }
 
-    
+
 
   </script>
 </body>
+
 </html>
