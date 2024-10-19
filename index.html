@@ -2,346 +2,273 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文本檢視器</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>惠特尼的寵物項圈</title>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+    }
 
-    <style>
-        .link {
-            cursor: pointer;
-            color: #5888dd;
-        }
+    .gold {
+      color: gold;
+    }
 
-        .link:hover {
-            text-decoration: underline;
-        }
+    .red {
+      color: red;
+    }
 
-        .gold {
-            color: #ffd700;
-        }
-
-        .light {
-            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
-        }
-    </style>
-
+    .pink {
+      color: rgb(241, 25, 104);
+    }
+  </style>
 </head>
 
 <body>
-    <div id="main"></div>
-    <br>
-    <div id="passage">（passage）</div>
-    <br>
-    <div id="show"><button>返回</button></div>
 
-    <script>
-        // 我的功能是要使用者點擊link之後，會變更文字
-        // 預設的文字會是第一個變更點
-        // 但文字裡也會有變更
-        // 感覺要寫一個變更的fn
+  <div id="main">
+    <button class="mainLink" data-passage="cp" type="button">cp</button>
+    <button class="mainLink" data-passage="cb" type="button">cb</button>
+  </div><!-- 放主選單 -->
 
-        // eventscourtyard
-        // bullyeventstreet
-        // schoolbully
+  <div id="passage"></div><!-- 文本 -->
+  <div id="variant"></div><!-- 變數 -->
 
-        var initCheck = false;
+  <div id="back">
+    <br><br>
+    <button class="main" type="button">返回</button>
+  </div>
 
-        let mainContent = [
-            {
-                h2: '告白',
-                h3: '',
-                event: [
-                    '操場',
-                    '小巷',
-                    '噴水池'
-                ],
-                id: [
-                    'whitneyConfessCourtyard',
-                    'whitneyConfessStreet',
-                    'whitneyConfessPark',
-                ]
+  <script>
+    // 他把你推到牆上。
+    // 他說：「［（高愛）你真的很可愛，［（男）男孩／（女）女孩］。／（低愛）我討厭你，［（男）渾蛋／（女）寶寶］。］」
+
+    // 有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位，［（男）男孩／（女）女孩］。"
+    // <br><br>
+    // 他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
+
+
+    // ［（link／支配>10）高支］
+    // ［（link／支配<10）低支］
+    // ［（rng）你很可愛／你很美／你很火辣］
+
+
+    // 我覺得我可以把一個［］內的物件全部選取，提取。然後再搜尋這個物件一次。直到沒有［］才跳出迴圈
+    // 由於每次進入一個新的段落都會迴圈一次，所以id可以重複用
+    // 會在［］的地點留下錨點
+
+
+    // 或許應該在每一次按按鈕都要偵測一次，這樣才可以在相對應的差分有相對應的連結
+    // 條件連結應該要一樣，這樣才能同時改變同一個條件的文字
+
+    // 會一次又一次第偵測passage的內容，直到沒有任何的［］存在
+
+    // 首先先把文本輸入進passage，
+    // 最後要把passage清除。
+    // 主選單表要跟main分開
+
+    let mainId = document.getElementById('main');
+    let passageID = document.getElementById('passage');
+    let variantID = document.getElementById('variant');
+    let passageClick = document.querySelectorAll(`[data-passage]`);
+    let numCheck = 0;
+
+    // 顯示首頁
+    function mainShow() {
+      mainId.style.display = 'block';
+    }
+    // 隱藏首頁
+    function mainHide() {
+      mainId.style.display = 'none';
+    }
+
+    let text = {
+      cp: `
+        有人把你推到了墙上。你转身面对罪魁祸首，但他直接固定住了你的双臂。是惠特尼，一个有名的不良学生。 "别再挡我的路，"他说道，他的金色碎发遮住了一边眼睛，但他毫不在意，他的朋友们站在他两侧。"否则我会让你明白你的地位。"
+        <br><br>
+        他将他的膝盖压入你的胯部片刻，［（生理性別與外表性別一致）然后松开了你，「［（男）男孩／（女）女孩］」／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你］。他和他朋友们离开了，但你怀疑这一切只是开始。 | + 性欲 | + 创伤 | + 压力
+      `,
+      cb: `
+      ［（沒穿上衣）惠特尼和他朋友们包围了你，把你逼到紧靠着储物柜。“不穿件上衣就到处晃？”他说。“我打赌你就喜欢这样来吸引男孩们的注意。”他转向他朋友们。“来吧，我们有比取悦这婊子更好的事做。”他们没再进一步骚扰你。／（穿著上衣）惠特尼和他的朋友们包围了你，你不得已抵在储物柜上。“过路费结一下，”他戳了戳你的胸口并抓住你的校服衬衫。“给我们看看你就行。” ］
+      `,
+    }
+    // 目前問題，不知道三套娃能不能成功
+    // 希望能解決換行問題
+
+    // 監聽事件
+    passageClick.forEach(element => {
+      element.addEventListener('click', function () {
+        // 獲取 data-passage 的內容
+        passageID.innerHTML = text[this.getAttribute('data-passage')];
+        mainHide()
+        passageCheck()
+        // console.log(text[this.getAttribute('data-passage')]);
+      });
+    });
+
+    // 返回按鈕
+    document.querySelector('.main').addEventListener('click', function () {
+      mainShow();
+      passageID.innerHTML = "";
+      variantID.innerHTML = "";
+      numCheck = 0;
+    });
+
+    let regex = /［（(\W+)）(.*?)］/g;
+
+    function passageCheck() {
+      // 抓取［］內的文字
+      let matches = passageID.innerHTML.match(regex);
+      // console.log(matches);
+
+      // 加入替換文字的錨點
+      passageID.innerHTML = passageID.innerHTML.replace(regex, `<span class="replace_${numCheck} gold"></span>`);
+      // console.log(passageID.innerHTML);
+
+      // 刪除最外圍的［］
+      let passageContent = matches[0].replace(/^［|］$/g, '');
+      // console.log("content: " + content);
+
+      // 因為要抓取連結按鈕，所以先去除［］內的內容，比較好操作
+      let cleanContent = passageContent.replace(regex, '');
+      // console.log("cleanContent: " + cleanContent);
+
+      // 抓取（）內的內容
+      let matcheVariant = [...cleanContent.matchAll(/（(.*?)）/g)];
+      // console.log(matcheVariant);
+
+      let variantLink = [];
+      let variantRegex = "";
+      matcheVariant.forEach((match, index) => {
+        variantLink.push(match)
+        variantRegex += match[0] + "(.*)";
+        if (matcheVariant.length - 1 > index) {
+          variantRegex += "\\／";
+        } else {
+          variantRegex = RegExp(variantRegex);
+        }
+        // console.log(match[1]);
+      });
+      // 抓取變體文字
+      let variantContent = passageContent.match(variantRegex);
+      // console.log(variantLink);
+
+      variantLink.forEach((link, index) => {
+        variantID.insertAdjacentHTML('beforeend', `<button class="button" data-cond="${link}_${index}" data-num="${numCheck}" type="button">${link[1]}</button>`);
+        // console.log(variantID.innerHTML);
+
+        let button = document.querySelector(`[data-cond="${link}_${index}"]`);
+
+        button.addEventListener('click', function () {
+          document.querySelector(`span.replace_${numCheck}`).innerHTML = variantContent[index + 1];
+
+          // 讀取點擊按鈕的num
+          numCheck = this.getAttribute('data-num');
+
+          // 遍歷所以連結的num
+          variantID.querySelectorAll('[data-num]').forEach(element => {
+            let num = Number(element.getAttribute('data-num'));
+
+            // 如果 num 大於 numCheck，就移除該元素
+            if (num > numCheck) {
+              element.remove();
             }
-        ]
 
-        function main() {
-            let Main = '';
-            for (i = 0; i < mainContent.length; i++) {
-                let content = mainContent[i];
+          });
 
-                // 插入標題
-                Main += `<h2>${content.h2}</h2>`;
-                Main += `<h3>${content.h3}</h3>`;
+          passageCheckAgain()
+        });
 
-                // 插入活動連結
-                for (n = 0; n < content.event.length; n++) {
-                    let linkId = content.id[n];
-                    Main += `<span id="${linkId}" class="link">${content.event[n]}</span>`;
+        if (index == 0) {
+          document.querySelector(`span.replace_${numCheck}`).innerHTML = variantContent[index + 1];
+        }
+      })
+      passageCheckAgain()
+    }
 
-                    // 連結插入分隔號，但最後一個不要插入
-                    if (n !== (content.event.length - 1)) {
-                        Main += `｜`;
-                    }
 
-                    // 更新首頁內容
-                    document.getElementById('main').innerHTML = Main;
-                }
-            }
+    function passageCheckAgain() {
+      if (passageID.innerHTML.match(regex)) {
+        numCheck += 1;
+        passageCheck();
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // let content = matches[0].match(/\（(.+?)\）/g);
+
+
+
+
+    // matchelike
+
+
+
+
+
+
+
+
+    function passageShow() {
+      let content = text.cp;
+      let match = content.match(/［（(.*?)］/g);
+
+      content = content.replace(/［(.*?)］/g, '<span class="replace"></span>');
+      match = match[0].replace(/［(.*?)］/g, '$1');
+      match = match.split('／');
+
+      //
+      // console.log(match);
+      // console.log(content);
+      document.getElementById('main').innerHTML = content;
+
+      let tag = []
+
+      match.forEach((value, index) => {
+        // console.log(`value: ${value}, index: ${index}`);
+        let temp = value.match(/（(.*?)）/g);
+        let temp2 = temp[0].replace(/（(.*?)）/g, '$1');
+        // console.log(temp);
+
+        tag.push(temp2);
+        document.getElementById('variant').insertAdjacentHTML('beforeend', `<button class="button" data-cond="${temp2}_${index}" type="button">${temp2}</button>`);
+
+        let button = document.querySelector(`[data-cond="${temp2}_${index}"]`);
+        console.log(button);
+
+        if (index == 0) {
+          document.querySelector('span.replace').innerHTML = `${value}`;
         }
 
-        // 初始化
-        main();
-
-        let T = {
-            red: '<span class="red">壓力</span>',
-        }
-
-        // let passage = {
-        //     whitneyConfessCourtyard:
-        //         `<p>你在${V("運動")}，</p><p>你${V("好感")}的人跟你告白，</p><p>你${V("態度")}的回復。</p>`,
-        // }
-        // ${V("好感", 2)}
-
-        // 提取所有的 condition
-        // const conditions = whitneyConfessCourtyard.map(item => item.condition);
-        // 找到 condition 為 "運動" 的對象
-        // const sportCondition = whitneyConfessCourtyard.find(item => item.condition === "運動");
-
-       
-        let passage = {
-            whitneyConfessCourtyard: [
-                {
-                    content: () => `<p>你在${V("運動")}，</p><p>你${V("好感")}的人跟你告白，</p><p>你${V("態度")}的回復。</p>`,
-                },
-                {
-                    type: "運動",
-                    variants: () => [
-                        {
-                            link: "跑步",
-                            text: ["跑100米"],
-                        },
-                        {
-                            link: "打籃球",
-                            text: ["丟籃板球"],
-                        }
-                    ]
-                },
-                {
-                    type: "好感",
-                    variants: () => [
-                        {
-                            link: "高好感",
-                            text: ['喜歡很久', `你交到${V("LI性別")}朋友了`],
-                        },
-                        {
-                            link: "低好感",
-                            text: ["討厭"],
-                        }
-                    ]
-                },
-                {
-                    type: "態度",
-                    variants: () => [
-                        {
-                            link: "溫順",
-                            text: ["溫柔"],
-                        },
-                        {
-                            link: "中立",
-                            text: ["急切"],
-                        }
-                        ,
-                        {
-                            link: "抗拒",
-                            text: ["自信"],
-                        }
-                    ]
-                },
-                {
-                    type: "LI性別",
-                    variants: () => [
-                        {
-                            link: "男LI",
-                            text: ["男"],
-                        },
-                        {
-                            link: "女LI",
-                            text: ["女"],
-                        }
-                    ]
-                },
-            ]
-        }
-        
-        function V(type, text) {
-            if (initCheck == false) {
-                console.log(`未初始化`)
-                return ``;
-            } else {
-                console.log(`已初始化`)
-                let vObj = passage.whitneyConfessCourtyard.find(item => item.type == type);
-                let obj = vObj.variants();
-                return obj[1].text; 
-            }
-        }
-
-        function test(){
-
-            initCheck = true;
-            document.getElementById('diff').innerHTML = passage.whitneyConfessCourtyard[0].content();
-            
-        }
-
-        test()
-
-        
-            
-
-        // console.log(mainLink[0].link); //測試json用
-
-        // 首頁
-        // function he(){
-        //     return "girl";
-        // }
+        button.addEventListener('click', function () {
+          document.querySelector('span.replace').innerHTML = `${value}`;
+        });
 
 
 
-        // // 首頁點擊事件
-        // for (i = 0; i < mainLink.length; i++) {
-        //     for (n = 0; n < mainLink[i].link.length; n++) {
-        //         let linkId = mainLink[i].id[n];
-        //         document.getElementById(linkId).onclick = function () {
-        //             mainHide();
-        //             textChange(linkId);
-        //         };
-
-        //     }
-        // }
+      })
 
 
-        // // 差分點擊事件
-        // function diffClick(item) {
-        //     for (d = 0; d < diff[`${item}`].length; d++) {
-        //         // console.log(diff[`${linkId}`][d]);
-        //         for (a = 0; a < diff[`${item}`][d].length; a++) {
-        //             // console.log(linkId + d + '_' + a);
-        //             document.getElementById(`${item}Diff_${d}_${a}`).onclick = function () {
-        //                 // console.log('點擊事件的 ID:', this.id);
-        //                 textChange(item, this.id);
-        //             };
-        //         }
-        //     }
-        // }
-
-        
-
-        // // 顯示首頁
-        // function mainShow() {
-        //     mainId.style.display = 'block';
-        // }
-        // // 隱藏首頁
-        // function mainHide() {
-        //     mainId.style.display = 'none';
-        // }
-        // // 顯示差分
-        // function diffShow() {
-        //     diffId.style.display = 'block';
-        // }
-        // // 隱藏差分
-        // function diffHide() {
-        //     diffId.style.display = 'none';
-        // }
-        // // 顯示文本
-        // function textShow() {
-        //     textId.style.display = 'block';
-        // }
-        // // 隱藏文本
-        // function textHide() {
-        //     textId.style.display = 'none';
-        // }
-        // // 顯示選項
-        // function optsShow() {
-        //     optsId.style.display = 'block';
-        // }
-        // // 隱藏選項
-        // function optsHide() {
-        //     optsId.style.display = 'none';
-        // }
-
-        // // 構建首頁
-        // function mainChange() {
-        //     mainId.innerHTML = Main;
-        // }
-
-        // // 宣告差分參數物件
-        // let T = {};
 
 
-        
-        // // 改變文本
-        // function textChange(item, itemId) {
-        //     // console.log(item, itemId);
-        //     let DI = diff[`${item}`];
-        //     let typeCheck = '';
 
-        //     // 差分物件參數預設為0
-        //     for (let i = 0; i < DI.length; i++) {
-        //         T[`${i}`] = 0;
-        //     }
 
-        //     // 使用正則表達式匹配並提取數字
-        //     if (itemId !== undefined) {
-        //         const num = itemId.match(/_(\d+)_(\d+)/);
-        //         if (num) {
-        //             // num[1] 匹配第一個數字，num[2] 匹配第二個數字
-        //             let type = parseInt(num[1], 10);
-        //             T[`${type}`] = parseInt(num[2], 10);
-        //             // console.log(type);
-        //             // console.log(T);
-        //         }
-        //     }
+    }
 
-        //     let text = {
-        //         whitneyConfessCourtyard:
-        //             `<p>你在${DI[0][T[0]][1]}，</p><p>你${DI[1][T[1]][1]}的人跟你告白，</p><p>你${DI[2][T[2]][1]}的回復。</p>${DI[1][T[1]][2]}`,
-        //         whitneyConfessStreet:
-        //             `<p>你在巷口</p><p>你喜歡的人跟你表白</p><p><span class="gold">你交到女朋友了！</span></p>`,
-        //         whitneyConfessPark:
-        //             `<p>你在公園</p><p>你喜歡的人跟你表達心意</p><p><span class="gold">你交到男女朋友了！</span></p>`,
-        //     }
 
-        //     mainHide();
-        //     diffShow();
-        //     textShow();
-        //     diffId.innerHTML = Diff[item];
-        //     textId.innerHTML = text[item];
-        //     diffClick(item)
 
-        //     // 讓變更的文字發光
-        //     if (itemId !== undefined) {
-        //         const num = itemId.match(/_(\d+)_(\d+)/);
-        //         if (num) {
-        //             // console.log(`${item}Text_${num[1]}_${num[2]}`);
-        //             let lightText = document.getElementsByClassName(`${item}Text_${num[1]}_${num[2]}`);
-        //             // 遍歷class屬性
-        //             Array.from(lightText).forEach(function (element) {
-        //                 element.classList.add('light');
-        //                 // 指定時間後去掉發光效果
-        //                 setTimeout(function () {
-        //                     element.classList.remove("light");
-        //                 }, 1000);
-        //             });
-        //         }
-        //     }
-        // }
-
-        // // 返回主頁的按鈕
-        // document.getElementById('show').onclick = function () {
-        //     mainShow();
-        //     diffHide();
-        //     textHide();
-        // };
-    </script>
-
+  </script>
 </body>
 
 </html>
