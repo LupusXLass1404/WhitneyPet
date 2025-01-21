@@ -1,52 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文本變體生成器</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    .gold {
-      color: gold;
-    }
-    .red {
-      color: red;
-    }
-    .pink {
-      color: rgb(241, 25, 104);
+    .choices {
+      margin-bottom: 10px;
     }
 
+    .choices span {
+      margin-right: 10px;
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
   </style>
-  <title>差分文本檢視系統</title>
 </head>
+
 <body>
-  <div id="main"></div><!-- 放主選單 -->
-  <button class="button" data-passage="start" type="button">Start</button>
-  
-  <div id="passage"></div><!-- 文本 -->
-  <div id="variant"></div><!-- 變數 -->
+  <div id="dynamicTextContainer"></div>
+
 
   <script>
-   const text = `（生理性別與外表性別一致）然后松开了你，［（男）男孩／（女）女孩］。／（生理性別與外表性別不同）皱着眉头停顿了一会儿才松开你`;
+    // Dynamic Text Variation Handler
+    // Author: [Your Name]
 
-// 使用正则表达式捕捉需要的部分
-const regex = /（生理性別與外表性別一致）(.*?)\/|（生理性別與外表性別不同）(.*)/g;
+    // Define the function to handle text replacements and link generation
+    function generateDynamicText(containerId, text) {
+      // Find the container where the dynamic text will be displayed
+      const container = document.getElementById(containerId);
 
-// 存储匹配结果
-const matches = [];
-let match;
+      if (!container) {
+        console.error("Container not found.");
+        return;
+      }
 
-while ((match = regex.exec(text)) !== null) {
-    // 捕捉每个匹配项
-    if (match[1]) {
-        matches.push(match[1].trim());
+      // Regex to identify placeholders like [[.../...]] or {{...}}
+      const regex = /\[\[([^\[]+?)\]\]|\{\{([^{}]+?)\}\}/g;
+
+      // Parse the text and generate interactive elements
+      const parseText = (input) => {
+        return input.replace(regex, (match, group1, group2) => {
+          // Group 1 for [[.../...]], Group 2 for {{...}}
+          const options = (group1 || group2).split(/\//);
+
+          // Create a span with interactive options
+          const span = document.createElement("span");
+          span.className = "dynamic-text";
+          span.textContent = options[0];
+
+          // Create a dropdown for switching
+          const dropdown = document.createElement("select");
+          dropdown.className = "dynamic-dropdown";
+
+          options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            dropdown.appendChild(opt);
+          });
+
+          // Update the span text on dropdown change
+          dropdown.addEventListener("change", (e) => {
+            span.textContent = e.target.value;
+          });
+
+          // Attach the dropdown to the span (for accessibility)
+          span.appendChild(dropdown);
+          return span.outerHTML;
+        });
+      };
+
+      // Clear existing content and set up new dynamic text
+      container.innerHTML = parseText(text);
     }
-    if (match[2]) {
-        matches.push(match[2].trim());
-    }
-}
 
-// 输出结果
-console.log(matches);
+    // Example Usage
+    document.addEventListener("DOMContentLoaded", () => {
+      const text = `
+        我帶上[[背包/錢袋]]，拉緊了背帶，站在[[山腳/森林]]下，凝視著那片未知的荒野。風輕輕拂過臉龐，心跳隨著激動加速。
+        「這是我必須走的路。」我對自己低語，目光堅定。
+        
+        他說：「{{高愛:你真的很可愛, [[男孩/女孩]]/低愛:我討厭你, [[渾蛋/寶寶]]}}。」
+    `;
 
+      generateDynamicText("dynamicTextContainer", text);
+    });
   </script>
 </body>
+
 </html>

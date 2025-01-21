@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: #111;
+            color: #eee;
+        }
+
+        .gold {
+            color: gold;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .pink {
+            color: rgb(241, 25, 104);
+        }
+
+        .link {
+            color: lightblue;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <p id="variant">變體</p>
+    <br><br>
+    <p id="text">開始</p>
+    <br><br>
+    <p id="link">連結</p>
+
+
+    <script>
+        const variantId = document.getElementById('variant');
+        const textId = document.getElementById('text');
+        const linkId = document.getElementById('link');
+
+        // 紀錄變化
+        const variantData = [];
+
+        // 標誌變數，確保事件監聽器只綁定一次
+        let listenerAdded = false;
+
+        let count = 0;
+        // const text = `他将他的膝盖压入你的胯部片刻，${v({ 生理性別與外表性別一致: `然后松开了你`, 生理性別與外表性別不同: `皱着眉头停顿了一会儿才松开你` })}。他和他朋友们离开了，但你怀疑这一切只是开始。${v({ 女: `妳`, 男: `你` })}`
+        const text = `他将他的膝盖压入你的胯部片刻，${v({ 生理性別與外表性別一致: () => `然后松开了你`, 生理性別與外表性別不同: () => `皱着眉头停顿了一会儿才松开${v({ 女: () => `妳`, 男: () => `你` })}` })}。他和他朋友们离开了，但${v({ 女: () => `妳`, 男: () => `你` })}怀疑这一切只是开始。`
+
+
+        function reText() {
+
+        }
+
+        function v(...arg) {
+            count++;
+            // 暫存第一個值
+
+            let tmp;
+            const obj = arg[0];
+
+            let linkList = [];
+
+            for (let key in obj) {
+                linkList.push(`<span class="link" data-variantLink="${count}" data-key="${key}">${key}</span>`);
+
+                variantData.push({ key: key, value: obj[key] });  // 儲存 key 和 value 供後續使用
+                if (!tmp) tmp = obj[key]();
+            }
+            // console.log(variantData);
+
+            // 產生變體連結
+            variantId.innerHTML += linkList.join(' | ') + " | ";
+
+            if (!listenerAdded) {
+                variantId.addEventListener('click', (e) => {
+                    if (e.target && e.target.dataset.variantlink) {
+                        // console.log(e.target);
+                        const variantDataVar = variantData;
+                        const variantLink = e.target.dataset.variantlink;  // 取得當前的 variantLink
+                        const key = e.target.dataset.key;  // 取得當前選項的 key
+                        const selectedVariant = variantDataVar.find(item => item.key === key);  // 根據 key 找到對應的值
+                        changeText(variantLink, selectedVariant.value);  // 根據選擇的 variant 顯示對應的文本
+                        console.log(variantData);
+                    }
+                });
+                listenerAdded = true;  // 設置標誌，表明事件監聽器已經添加
+            }
+
+            // 返回第一個值
+            return `<span data-variant="${count}">${tmp}</span>`;
+        }
+
+        function changeText(variantLink, value) {
+            console.log(variantLink, value);  // 輸出選中的值，可以替換為其他邏輯來顯示內容
+            textId.querySelector(`[data-variant="${variantLink}"]`).innerHTML = value();
+        }
+
+        // 輸出文字
+        textId.innerHTML = text;
+
+    </script>
+</body>
+
+</html>
